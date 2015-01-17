@@ -1,7 +1,15 @@
-var io = require('socket.io').listen(3000),
-	autonomy = require('ardrone-autonomy');;
+var express = require('express'),
+	app = express(),
+	server = require('http').Server(app),
+	io = require('socket.io').listen(server);
 
-var mission = autonomy.createMission(),
+app.use(express.static(__dirname + '/../web'));
+
+server.listen(3000);
+
+
+var autonomy = require('ardrone-autonomy'),
+	mission = autonomy.createMission(),
 	control = mission.control(),
 	client = mission.client();
 
@@ -49,7 +57,7 @@ io.on('connection', function(socket){
 			else
 			{
 			    control.backward(20);
-			}		
+			}
 			var angle = data.angle;
 		}
 
@@ -71,6 +79,8 @@ io.on('connection', function(socket){
 
 
 process.on('SIGINT', function(){
+	console.log('Landing/Exiting...');
+
 	mission.client().stop();
 	mission.client().land(function(){
 	});

@@ -178,6 +178,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         Core.rectangle(frameBuffer, p, q, new Scalar(0, 0, 255, 255), 5);
 */
 
+        int center_w = screen_width / 2;
+        int center_h = screen_height / 2;
+
+
         if(detector.getContours().size() >= 2){
 
             Rect rectL = detector.getBoundingBox(0);
@@ -205,8 +209,6 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
             int THRESHOLD = (int)(screen_width * 0.4);
             if(screen_width - distance < THRESHOLD){
 
-                int center_w = screen_width / 2;
-                int center_h = screen_height / 2;
                 int bsize = 100;
 
                 // Draw center box
@@ -220,16 +222,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
             }
 
-/*
-            float dx = (float) (center_w - r.tl().x);
-            float dy = (float) (r.tl().y - center_h);
 
-            n++;
-            if(n % 10 == 0){
-                io.send(sensors.getAngle(), myo.getAngle(), dx, dy);
-            }
-*/
         }
+
+        Core.circle(frameBuffer, new Point(center_w, center_h), 10, new Scalar(255, 0, 255, 255), 5);
 
         return frameBuffer;
     }

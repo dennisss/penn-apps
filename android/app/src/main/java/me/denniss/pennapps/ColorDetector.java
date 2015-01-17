@@ -116,6 +116,16 @@ public class ColorDetector {
 
 	}
 
+    public Mat getMask(Mat rgbaImage){
+        Mat hsv = new Mat(rgbaImage.rows(), rgbaImage.cols(), CvType.CV_8UC4);
+        Mat mask = new Mat(rgbaImage.rows(), rgbaImage.cols(), CvType.CV_8UC4);
+        Mat f = new Mat(rgbaImage.rows(), rgbaImage.cols(), CvType.CV_8UC4);
+
+        Imgproc.cvtColor(rgbaImage, hsv, Imgproc.COLOR_RGB2HSV_FULL);
+        Core.inRange(hsv, mLowerBound, mUpperBound, mask);
+        Imgproc.dilate(mask, f, new Mat());
+        return f;
+    }
 
 	public List<MatOfPoint> getContours() {
 		return mContours;
