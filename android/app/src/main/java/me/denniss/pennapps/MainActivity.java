@@ -1,6 +1,7 @@
 package me.denniss.pennapps;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,8 +31,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.Random;
 
 public class MainActivity extends Activity implements CvCameraViewListener2 {
+
+    private Random rand = new Random();
+    private MediaPlayer[] deflectSounds;
+
 
     private CameraBridgeViewBase cameraView;
 
@@ -106,6 +112,13 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         });
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+
+        deflectSounds = new MediaPlayer[]{
+                MediaPlayer.create(this, R.raw.ping_pong_8bit_beeep),
+                MediaPlayer.create(this, R.raw.ping_pong_8bit_peeeeeep),
+                MediaPlayer.create(this, R.raw.ping_pong_8bit_plop)
+        };
+
     }
 
 
@@ -149,6 +162,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
             Point lCenter = new Point(rectL.tl().x + (rectL.width / 2), rectL.tl().y + (rectL.height / 2));
             Point rCenter = new Point(rectR.tl().x + (rectR.width / 2), rectR.tl().y + (rectR.height / 2));
 
+
+
             double distance = Math.hypot(lCenter.x - rCenter.x, lCenter.y - rCenter.y);
 
             Log.i("DISTANCE", ""+distance);
@@ -167,6 +182,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
 
                 io.deflect(0);
+                deflectSounds[rand.nextInt(3)].start();
 
             }
 
