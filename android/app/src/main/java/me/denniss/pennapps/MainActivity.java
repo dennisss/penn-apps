@@ -20,6 +20,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 
 import android.app.Activity;
 import android.hardware.Camera;
@@ -48,9 +49,9 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
     private int screen_width;
     private int screen_height;
 
-    private static final Scalar RECT_COLOR = new Scalar(0, 255, 0, 255);
+    private static final Scalar RECT_COLOR = new Scalar(255, 0, 0, 255);
     private static final String TAG = "penn-apps";
-    private Button startButton,stopButton,reconnect;
+    private Button startButton,stopButton,reconnect,recalibrate;
 
 
     private BaseLoaderCallback  mLoaderCallback = new BaseLoaderCallback(this) {
@@ -89,6 +90,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         startButton = (Button)findViewById(R.id.startButton);
         stopButton = (Button)findViewById(R.id.stopButton);
         reconnect = (Button)findViewById(R.id.reconnectButton);
+        recalibrate = (Button)findViewById(R.id.recalibrate);
 
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +112,14 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
                 io.reconnect();
             }
         });
+
+        recalibrate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recalalibrate();
+            }
+        });
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 
@@ -123,6 +133,30 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
 
     private int n = 0;
+
+    public void recalalibrate()
+    {
+        Rect rec = new Rect();
+        rec.height = 20;
+        rec.width = 20;
+        rec.x = frameBuffer.width()/2 - rec.height/2;
+        rec.y = frameBuffer.height()/2 - rec.width/2;
+
+        Mat touchedRegionRgba = frameBuffer.submat(rec);
+
+        Mat touchedRegionHsv = new Mat();
+        Imgproc.cvtColor(touchedRegionRgba, touchedRegionHsv, Imgproc.COLOR_RGB2HSV_FULL);
+
+        // Calculate average color of touched region
+        Scalar mBlobColorHsv = Core.sumElems(touchedRegionHsv);
+        int pointCount = rec.width*rec.height;
+        for (int i = 0; i < mBlobColorHsv.val.length; i++)
+            mBlobColorHsv.val[i] /= pointCount;
+
+        Toast.makeText(this,"Color: " + mBlobColorHsv.val[0]+ "  "+ mBlobColorHsv.val[1] + "  " + mBlobColorHsv.val[2],
+                Toast.LENGTH_SHORT).show();
+        detector.setHsvColor(mBlobColorHsv);
+    }
 
     @Override
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {

@@ -44,11 +44,11 @@ io.on('connection', function(socket){
 			forward = !forward;
 			if(forward)
 			{
-			    //control.forward(20);
+			    control.forward(20);
 			}
 			else
 			{
-			    //control.backward(20);
+			    control.backward(20);
 			}		
 			var angle = data.angle;
 		}
