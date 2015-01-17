@@ -1,0 +1,9 @@
+{
+	"name": "penn-apps",
+	"private": true,
+	"dependencies": {
+		"ar-drone": "latest",
+		"ardrone-autonomy": "latest",
+		"socket.io": "0.9.16"
+	}
+}

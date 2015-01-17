@@ -21,4 +21,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile files('libs/opencv library - 2.4.10.jar')
+    compile files('libs/socketio.jar')
 }
