@@ -109,10 +109,37 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
             Rect rectL = detector.getBoundingBox(0);
             Rect rectR = detector.getBoundingBox(1);
 
+            if(rectL.tl().x > rectR.tl().x){
+                Rect temp = rectL;
+                rectL = rectR;
+                rectR = temp;
+            }
+
 
             Core.rectangle(frameBuffer, rectL.tl(), rectL.br(), RECT_COLOR, 3);
             Core.rectangle(frameBuffer, rectR.tl(), rectR.br(), RECT_COLOR, 3);
 
+            Point lCenter = new Point(rectL.tl().x + (rectL.width / 2), rectL.tl().y + (rectL.height / 2));
+            Point rCenter = new Point(rectR.tl().x + (rectR.width / 2), rectR.tl().y + (rectR.height / 2));
+
+            double distance = Math.hypot(lCenter.x - rCenter.x, lCenter.y - rCenter.y);
+
+            Log.i("DISTANCE", ""+distance);
+
+            if(screen_width - distance < 400){
+
+                int center_w = screen_width / 2;
+                int center_h = screen_height / 2;
+                int bsize = 100;
+
+                // Draw center box
+                Point p = new Point(center_w - bsize, center_h - bsize);
+                Point q = new Point(center_w + bsize, center_h + bsize);
+                Core.rectangle(frameBuffer, p, q, new Scalar(0, 0, 255, 255), 5);
+
+                io.deflect(0);
+
+            }
 
 /*
             float dx = (float) (center_w - r.tl().x);

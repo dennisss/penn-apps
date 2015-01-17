@@ -59,29 +59,22 @@ public class Socket {
 			e1.printStackTrace();
 		}
 	}
-    
 
-	public void send(float angle, float throttle, float dx, float dy){
-		
-		Log.i(TAG, "Send");
-		
-		JSONObject obj = new JSONObject();
-		
-		try {
-			obj.put("orient", angle);
-			obj.put("throt", throttle);
-			obj.put("dx", dx);
-			obj.put("dy", dy);
-			
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    public void deflect(float angle){
 
-		// Emits an event to the server.
-		socket.emit("update", obj);
-		
-	}
-	
-	
+        Log.i(TAG, "Deflect");
+
+        JSONObject obj = new JSONObject();
+
+        try {
+            obj.put("angle", angle);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        socket.emit("angle", obj);
+
+    }
+
+
 }
