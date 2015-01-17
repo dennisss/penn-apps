@@ -16,7 +16,7 @@ import org.opencv.imgproc.Imgproc;
 
 public class ColorDetector {
 
-	private static Scalar SHELL_COLOR = new Scalar(153.59375, 158.765625, 74.1875, 0.0);
+	private static Scalar SHELL_COLOR = new Scalar(60.390625, 153.0625, 91.578125); //153.59375, 158.765625, 74.1875, 0.0);
 
 	public ColorDetector(){
 		this.setHsvColor(SHELL_COLOR);
