@@ -126,7 +126,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
             Log.i("DISTANCE", ""+distance);
 
-            if(screen_width - distance < 400){
+            int THRESHOLD = (int)(screen_width * 0.4);
+            if(screen_width - distance < THRESHOLD){
 
                 int center_w = screen_width / 2;
                 int center_h = screen_height / 2;
@@ -137,7 +138,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
                 Point q = new Point(center_w + bsize, center_h + bsize);
                 Core.rectangle(frameBuffer, p, q, new Scalar(0, 0, 255, 255), 5);
 
-                io.deflect(0);
+                //io.deflect(0);
 
             }
 
