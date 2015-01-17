@@ -4,48 +4,93 @@ import java.net.MalformedURLException;
 
 import org.json.*;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
+
 import io.socket.*;
 
 public class Socket {
 
 	public SocketIO socket;
-
 	private static String TAG = "penn-apps";
-	
-	public Socket(){
+    private static MainActivity parent;
+
+	public Socket(MainActivity context){
+        this.parent = context;
 		try {
-			socket = new SocketIO("http://192.168.1.2:3000/"); //"http://192.168.16.29:3000/");
+			socket = new SocketIO("http://158.130.175.179:3000/"); //"http://192.168.16.29:3000/");
 
 			socket.connect(new IOCallback() {
 				@Override
-				public void onMessage(JSONObject json, IOAcknowledge ack) {
+				public void onMessage(final JSONObject json, IOAcknowledge ack) {
 					try {
 						Log.i(TAG, "Server said:" + json.toString(2));
+
+                        parent.runOnUiThread(new Runnable() {
+                            public void run() {
+                                try {
+                                    Toast.makeText(parent.getBaseContext(),"Server said: " + json.toString(2),
+                                            Toast.LENGTH_SHORT).show();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+
+
+
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
 				}
 
 				@Override
-				public void onMessage(String data, IOAcknowledge ack) {
+				public void onMessage(final String data, IOAcknowledge ack) {
 					System.out.println("Server said: " + data);
+                    parent.runOnUiThread(new Runnable() {
+                        public void run() {
+                                Toast.makeText(parent.getBaseContext(),"Server said: " + data,
+                                        Toast.LENGTH_SHORT).show();
+                        }
+                    });
 				}
 
 				@Override
-				public void onError(SocketIOException socketIOException) {
-					Log.i(TAG, "an Error occured");
+				public void onError(final  SocketIOException socketIOException) {
+					Log.e(TAG, "an Error occured");
+
 					socketIOException.printStackTrace();
+                    parent.runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(parent.getBaseContext(), "ERROR",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
 				}
 
 				@Override
 				public void onDisconnect() {
 					Log.i(TAG, "Connection terminated.");
+                    parent.runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(parent.getBaseContext(), "Disconnected",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
 				}
 
 				@Override
 				public void onConnect() {
 					Log.i(TAG, "Connection established");
+                    parent.runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(parent.getBaseContext(), "Connected",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
 				}
 
 				@Override
@@ -60,6 +105,21 @@ public class Socket {
 		}
 	}
 
+    public void start()
+    {
+        socket.emit("start");
+    }
+
+    public void stop()
+    {
+        socket.emit("stop");
+    }
+
+    public void reconnect()
+    {
+        socket.reconnect();
+    }
+
     public void deflect(float angle){
 
         Log.i(TAG, "Deflect");
@@ -72,7 +132,7 @@ public class Socket {
             e.printStackTrace();
         }
 
-        socket.emit("angle", obj);
+        socket.emit("deflect", obj);
 
     }
 

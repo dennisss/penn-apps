@@ -24,9 +24,11 @@ import android.app.Activity;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
+import android.widget.Button;
+import android.widget.Toast;
 
 
 public class MainActivity extends Activity implements CvCameraViewListener2 {
@@ -42,7 +44,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
     private static final Scalar RECT_COLOR = new Scalar(0, 255, 0, 255);
     private static final String TAG = "penn-apps";
-
+    private Button startButton,stopButton,reconnect;
 
 
     private BaseLoaderCallback  mLoaderCallback = new BaseLoaderCallback(this) {
@@ -72,11 +74,36 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_main);
+        io = new Socket(this);
+
 
         cameraView = (CameraBridgeViewBase) findViewById(R.id.camera_view);
         cameraView.setCvCameraViewListener(this);
 
+        startButton = (Button)findViewById(R.id.startButton);
+        stopButton = (Button)findViewById(R.id.stopButton);
+        reconnect = (Button)findViewById(R.id.reconnectButton);
 
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                io.start();
+            }
+        });
+
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                io.stop();
+            }
+        });
+
+        reconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                io.reconnect();
+            }
+        });
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
     }
@@ -138,7 +165,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
                 Point q = new Point(center_w + bsize, center_h + bsize);
                 Core.rectangle(frameBuffer, p, q, new Scalar(0, 0, 255, 255), 5);
 
-                //io.deflect(0);
+
+                io.deflect(0);
 
             }
 
