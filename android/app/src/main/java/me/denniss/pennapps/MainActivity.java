@@ -32,6 +32,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.zerokol.views.JoystickView;
+
 import java.util.Random;
 
 public class MainActivity extends Activity implements CvCameraViewListener2 {
@@ -45,13 +47,13 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
     private Mat frameBuffer;
     private ColorDetector detector;
     private Socket io;
-
+    private JoystickView joystick;
     private int screen_width;
     private int screen_height;
 
     private static final Scalar RECT_COLOR = new Scalar(255, 0, 0, 255);
     private static final String TAG = "penn-apps";
-    private Button startButton,stopButton,reconnect,recalibrate,restart;
+    private Button startButton,stopButton,reconnect,recalibrate;
 
 
     private BaseLoaderCallback  mLoaderCallback = new BaseLoaderCallback(this) {
@@ -91,14 +93,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         stopButton = (Button)findViewById(R.id.stopButton);
         reconnect = (Button)findViewById(R.id.reconnectButton);
         recalibrate = (Button)findViewById(R.id.recalibrate);
-        restart = (Button)findViewById(R.id.restartGame);
+        joystick = (JoystickView)findViewById(R.id.joystickView);
 
-        restart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,6 +131,14 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
                 MediaPlayer.create(this, R.raw.ping_pong_8bit_peeeeeep),
                 MediaPlayer.create(this, R.raw.ping_pong_8bit_plop)
         };
+
+
+        joystick.setOnJoystickMoveListener(new JoystickView.OnJoystickMoveListener() {
+            @Override
+            public void onValueChanged(int i, int i2, int i3) {
+
+            }
+        },JoystickView.DEFAULT_LOOP_INTERVAL);
 
     }
 
