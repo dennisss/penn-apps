@@ -38,7 +38,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
     private Random rand = new Random();
     private MediaPlayer[] deflectSounds;
-
+    private MainActivity selfActivity;
 
     private CameraBridgeViewBase cameraView;
 
@@ -51,7 +51,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
     private static final Scalar RECT_COLOR = new Scalar(255, 0, 0, 255);
     private static final String TAG = "penn-apps";
-    private Button startButton,stopButton,reconnect,recalibrate;
+    private Button startButton,stopButton,reconnect,recalibrate,restart;
 
 
     private BaseLoaderCallback  mLoaderCallback = new BaseLoaderCallback(this) {
@@ -83,7 +83,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         setContentView(R.layout.activity_main);
         io = new Socket(this);
 
-
+        selfActivity = this;
         cameraView = (CameraBridgeViewBase) findViewById(R.id.camera_view);
         cameraView.setCvCameraViewListener(this);
 
@@ -91,7 +91,14 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         stopButton = (Button)findViewById(R.id.stopButton);
         reconnect = (Button)findViewById(R.id.reconnectButton);
         recalibrate = (Button)findViewById(R.id.recalibrate);
+        restart = (Button)findViewById(R.id.restartGame);
 
+        restart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,7 +116,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         reconnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                io.reconnect();
+                io = new Socket(selfActivity);
             }
         });
 
@@ -202,11 +209,11 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
 
 
-            double distance = Math.hypot(lCenter.x - rCenter.x, lCenter.y - rCenter.y);
+            double  distance = Math.hypot(lCenter.x - rCenter.x, lCenter.y - rCenter.y);
 
             Log.i("DISTANCE", ""+distance);
 
-            int THRESHOLD = (int)(screen_width * 0.4);
+            int THRESHOLD = (int)(screen_width * 0.8);
             if(screen_width - distance < THRESHOLD){
 
                 int bsize = 100;

@@ -7,7 +7,7 @@ client.on('navdata', function(data)
 	{
 		return;
 	}	
-	var diff =  0 - (data.demo.rotation.clockwise);
+	var diff =  0 - (data.demo.rotation.clockwise + 180);
 	diff = ((diff + 180) % 360) - 180;
 	console.log(diff);
 });

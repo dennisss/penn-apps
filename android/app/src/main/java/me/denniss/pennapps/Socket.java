@@ -115,10 +115,16 @@ public class Socket {
         socket.emit("stop");
     }
 
-    public void reconnect()
+    /*public void reconnect()
     {
         socket.reconnect();
+    }*/
+
+    public void restartGame()
+    {
+        socket.emit("restart");
     }
+
 
     public void deflect(float angle){
 
