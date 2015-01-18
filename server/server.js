@@ -26,14 +26,6 @@ io.on('connection', function(socket){
 		console.log('disconnected');
 	});
 
-	socket.on('restart',function(){
-		lastDeflect = undefined;
-		forward = false;
-		client.front(0);
-		client.back(0);
-		started = false;
-	});
-
 	// Start the game
 	socket.on('start', function(){
 		console.log('starting')
@@ -45,19 +37,19 @@ io.on('connection', function(socket){
 
 		forward = false;
 		client.takeoff();
-		client.up(0.5);
+		client.up(0.3);
 
 		setTimeout(function(){
 			client.stop();
 
-			client.calibrate(0);
+			//client.calibrate(0);
 
 			setTimeout(function(){
 				started = true;
 				normalOrientation = currentOrientation;
 			}, 3000);
 
-		}, 3000);
+		}, 5000);
 	});
 
 	// Stop the game
@@ -76,13 +68,21 @@ io.on('connection', function(socket){
 			forward = !forward;
 			if(forward)
 			{
-			    client.front(0.3);
+			    client.front(0.15);
 			}
 			else
 			{
-			    client.back(0.3);
+			    client.back(0.15);
 			}
 			var angle = data.angle;
+			if(!forward)
+			{
+				normalOrientation += angle;
+			}
+			else
+			{
+				normalOrientation -=angle;
+			}
 		}
 
 	});
@@ -134,7 +134,7 @@ client.on('navdata', function(data)
 	}
 	else
 	{
-		console.log("BATTERY: " + demo.batteryPercentage);
+		console.log("BATTERY: " + data.demo.batteryPercentage);
 	}
 
 });

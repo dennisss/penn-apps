@@ -50,6 +50,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
     private JoystickView joystick;
     private int screen_width;
     private int screen_height;
+    private int joystickAngle = 0;
 
     private static final Scalar RECT_COLOR = new Scalar(255, 0, 0, 255);
     private static final String TAG = "penn-apps";
@@ -136,6 +137,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         joystick.setOnJoystickMoveListener(new JoystickView.OnJoystickMoveListener() {
             @Override
             public void onValueChanged(int i, int i2, int i3) {
+                joystickAngle = i;
+               // Log.e("angle", i + "");
 
             }
         },JoystickView.DEFAULT_LOOP_INTERVAL);
@@ -227,8 +230,16 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
                 Point q = new Point(center_w + bsize, center_h + bsize);
                 Core.rectangle(frameBuffer, p, q, new Scalar(0, 0, 255, 255), 5);
 
+               if(joystickAngle < -10)
+               {
+                   joystickAngle = -10;
+               }
+               else if(joystickAngle > 10)
+               {
+                   joystickAngle = 10;
+               }
 
-                io.deflect(0);
+                io.deflect(joystickAngle);
                 deflectSounds[rand.nextInt(3)].start();
 
             }

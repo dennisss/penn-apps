@@ -26,42 +26,36 @@ io.on('connection', function(socket){
 		console.log('disconnected');
 	});
 
-	socket.on('restart',function(){
-		numPeople = 0;
-		lastDeflect = undefined;
-		forward = false;
-		client.front(0);
-		client.back(0);
-		started = false;
-	});
-
 	// Start the game
 	socket.on('start', function(){
 		console.log('starting')
-		
-		numPeople = 0;
+
+		//numPeople = 0;
 		lastDeflect = undefined;
-		client.front(0);
-		client.back(0);
+
+		client.stop();
 
 		forward = false;
 		client.takeoff();
-		client.up(0.5);
+		client.up(0.3);
 
 		setTimeout(function(){
-			client.up(0);
-			started = true;
-			normalOrientation = currentOrientation;
-			/*setTimeout(function(){
-				
-			},1000);*/
+			client.stop();
 
-		}, 3000);
+			//client.calibrate(0);
+
+			setTimeout(function(){
+				started = true;
+				normalOrientation = currentOrientation;
+			}, 3000);
+
+		}, 5000);
 	});
 
 	// Stop the game
 	socket.on('stop', function(){
 		console.log('stop');
+		client.stop();
 		client.land();
 	});
 
@@ -74,13 +68,21 @@ io.on('connection', function(socket){
 			forward = !forward;
 			if(forward)
 			{
-			    client.front(0.3);
+			    client.front(0.15);
 			}
 			else
 			{
-			    client.back(0.3);
+			    client.back(0.15);
 			}
 			var angle = data.angle;
+			if(!forward)
+			{
+				normalOrientation += angle;
+			}
+			else
+			{
+				normalOrientation -=angle;
+			}
 		}
 
 	});
@@ -122,19 +124,19 @@ client.on('navdata', function(data)
 		else if(diff < 0){
 			// ccw
 			console.log('GOING CCW');
-			client.counterClockwise(.1);
+			client.counterClockwise(0.3);
 		}
-		else{ 
+		else{
 			// cw
 			console.log('GOING CW');
-			client.clockwise(.1);
+			client.clockwise(0.3);
 		}
-	}	
+	}
 	else
 	{
-		console.log("BATTERY: " + demo.batteryPercentage);	
+		console.log("BATTERY: " + data.demo.batteryPercentage);
 	}
-	
+
 });
 
 
