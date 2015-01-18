@@ -166,6 +166,8 @@ client.on('navdata', function(data)
 		return;
 	}
 
+	//console.log(data.demo.rotation);
+
 	currentOrientation = data.demo.rotation.clockwise;
 
 	if(started)
@@ -177,7 +179,16 @@ client.on('navdata', function(data)
 
 		if(Math.abs(diff) < 5){
 			// Zero velocity
-			client.clockwise(0);
+			//client.clockwise(0);
+			client.stop();
+			if(forward)
+			{	
+				client.front(.15);
+			}
+			else
+			{	
+				client.back(.15);
+			}
 		}
 		else if(diff < 0){
 			// ccw

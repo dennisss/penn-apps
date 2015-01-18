@@ -22,7 +22,7 @@ public class Socket {
 	public Socket(MainActivity context){
         this.parent = context;
 		try {
-			socket = new SocketIO("http://158.130.166.217:3000/"); //"http://192.168.16.29:3000/");
+			socket = new SocketIO("http://192.168.1.4:3000/"); //"http://192.168.16.29:3000/");
 
 			socket.connect(new IOCallback() {
 				@Override
