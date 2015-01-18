@@ -2,11 +2,13 @@ package me.denniss.pennapps;
 
 import java.net.MalformedURLException;
 
+import org.apache.http.NameValuePair;
 import org.json.*;
 
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import io.socket.*;
@@ -20,7 +22,7 @@ public class Socket {
 	public Socket(MainActivity context){
         this.parent = context;
 		try {
-			socket = new SocketIO("http://192.168.1.4:3000/"); //"http://192.168.16.29:3000/");
+			socket = new SocketIO("http://158.130.166.217:3000/"); //"http://192.168.16.29:3000/");
 
 			socket.connect(new IOCallback() {
 				@Override
@@ -58,6 +60,10 @@ public class Socket {
                     });
 				}
 
+
+
+
+
 				@Override
 				public void onError(final  SocketIOException socketIOException) {
 					Log.e(TAG, "an Error occured");
@@ -94,10 +100,26 @@ public class Socket {
 				}
 
 				@Override
-				public void on(String event, IOAcknowledge ack, Object... args) {
-					System.out.println("Server triggered event '" + event + "'");
+				public void on(final String event, IOAcknowledge ack, final Object... args) {
+                    parent.runOnUiThread(new Runnable() {
+                        public void run() {
+                            if(event.equals("score"))
+                            {
+                                int my, your;
+                                try {
+                                    my = (Integer)((JSONArray)(((JSONObject) args[0]).get("s"))).get(0);
+                                    your = (Integer)((JSONArray)(((JSONObject) args[0]).get("s"))).get(1);
+                                    ((TextView)parent.findViewById(R.id.yourScore)).setText("Your Score: " + my);
+                                    ((TextView)parent.findViewById(R.id.otherScore)).setText("Opponent Score: " + your);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
 				}
 			});
+
 
 		} catch (MalformedURLException e1) {
 			// TODO Auto-generated catch block

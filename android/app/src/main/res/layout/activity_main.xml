@@ -8,6 +8,24 @@
         android:layout_height="fill_parent"
         android:id="@+id/camera_view" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="Your Score: 0"
+        android:textColor="@android:color/holo_blue_light"
+        android:id="@+id/yourScore"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="Opponent Score: 0"
+        android:layout_below="@+id/yourScore"
+        android:textColor="@android:color/holo_red_light"
+        android:id="@+id/otherScore"/>
+
+
     <Button
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
