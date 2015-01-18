@@ -17,13 +17,19 @@ var forward = false;
 var numPeople = 0;
 var lastDeflect;
 
+var people = {};
+
 io.on('connection', function(socket){
 	console.log('connect');
 
-	var id = ++numPeople;
+	var id = undefined; //++numPeople;
 
 	socket.on('disconnect', function(){
 		console.log('disconnected');
+
+		if(id !== undefined)
+			delete people[id];
+
 	});
 
 	// Start the game
@@ -59,8 +65,25 @@ io.on('connection', function(socket){
 		client.land();
 	});
 
+
+	var timeout = null;
+
 	// Cause the copter to start moving in the opposite direction
 	socket.on('deflect', function(data){
+		if(id === undefined){
+			if(Object.keys(people).length > 2){
+				console.log('Warning: More than two people');
+			}
+
+			id = ++numPeople;
+			people[id] = {
+				socket: socket,
+				score: 0
+			};
+		}
+
+
+
 		if(lastDeflect != id)
 		{
 			lastDeflect = id;
@@ -83,6 +106,41 @@ io.on('connection', function(socket){
 			{
 				normalOrientation -=angle;
 			}
+
+			if(timeout){
+				clearTimeout(timeout);
+				timeout = null
+			}
+
+			timeout = setTimeout(function(){
+
+				// Miss
+				console.log('MISS');
+				socket.emit('stop');
+				people[id].score++;
+
+				for(var k in people){
+					if(people.hasOwnProperty(k)){
+
+						var s = [people[k].score];
+
+
+						for(var j in people){
+							if(people.hasOwnProperty(j)){
+
+								if(j != k)
+									s.push(people[j].score);
+							}
+						}
+
+						people[k].socket.emit('score', {s: s});
+
+					}
+				}
+
+
+			}, 10000);
+
 		}
 
 	});

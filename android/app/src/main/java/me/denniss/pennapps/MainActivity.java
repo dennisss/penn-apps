@@ -220,8 +220,11 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
             Log.i("DISTANCE", ""+distance);
 
-            int THRESHOLD = (int)(screen_width * 0.8);
-            if(screen_width - distance < THRESHOLD){
+            double THRESHOLD = 0.2;
+            double progress = (distance / screen_width) / THRESHOLD;
+    
+
+            if(progress >= 1.0){
 
                 int bsize = 100;
 

@@ -115,6 +115,20 @@ public class Socket {
         socket.emit("stop");
     }
 
+    public void update(float progress){
+
+        JSONObject obj = new JSONObject();
+
+        try {
+            obj.put("progress", progress);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        socket.emit("progress", obj);
+
+    }
+
     public void deflect(float angle){
 
         Log.i(TAG, "Deflect");
