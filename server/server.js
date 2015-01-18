@@ -27,7 +27,6 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('restart',function(){
-		numPeople = 0;
 		lastDeflect = undefined;
 		forward = false;
 		client.front(0);
@@ -38,23 +37,25 @@ io.on('connection', function(socket){
 	// Start the game
 	socket.on('start', function(){
 		console.log('starting')
-		
-		numPeople = 0;
+
+		//numPeople = 0;
 		lastDeflect = undefined;
-		client.front(0);
-		client.back(0);
+
+		client.stop();
 
 		forward = false;
 		client.takeoff();
 		client.up(0.5);
 
 		setTimeout(function(){
-			client.up(0);
-			started = true;
-			normalOrientation = currentOrientation;
-			/*setTimeout(function(){
-				
-			},1000);*/
+			client.stop();
+
+			client.calibrate(0);
+
+			setTimeout(function(){
+				started = true;
+				normalOrientation = currentOrientation;
+			}, 3000);
 
 		}, 3000);
 	});
@@ -62,6 +63,7 @@ io.on('connection', function(socket){
 	// Stop the game
 	socket.on('stop', function(){
 		console.log('stop');
+		client.stop();
 		client.land();
 	});
 
@@ -122,19 +124,19 @@ client.on('navdata', function(data)
 		else if(diff < 0){
 			// ccw
 			console.log('GOING CCW');
-			client.counterClockwise(.1);
+			client.counterClockwise(0.1);
 		}
-		else{ 
+		else{
 			// cw
 			console.log('GOING CW');
-			client.clockwise(.1);
+			client.clockwise(0.1);
 		}
-	}	
+	}
 	else
 	{
-		console.log("BATTERY: " + demo.batteryPercentage);	
+		console.log("BATTERY: " + demo.batteryPercentage);
 	}
-	
+
 });
 
 
