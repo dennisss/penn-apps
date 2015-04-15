@@ -1,8 +1,11 @@
 package me.denniss.pennapps;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -30,6 +33,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.zerokol.views.JoystickView;
@@ -116,6 +120,39 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
                 io = new Socket(selfActivity);
             }
         });
+
+        reconnect.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(selfActivity);
+                builder.setTitle("Change IP Address");
+
+                final EditText input = new EditText(selfActivity);
+                input.setText(Socket.IP_ADDR);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                builder.setPositiveButton("Set", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Socket.IP_ADDR = input.getText().toString();
+                        selfActivity.io = new Socket(selfActivity);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+
+                return true;
+            }
+        });
+
 
         recalibrate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,7 +259,6 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
 
             double THRESHOLD = 0.2;
             double progress = (distance / screen_width) / THRESHOLD;
-    
 
             if(progress >= 1.0){
 
